@@ -6,6 +6,6 @@ bitcoin.createNewBlock(123,'sadasdasda23edasd23das','asd23dasdc234rasd23dqd')
 bitcoin.createNewBlock(654764,'986986986','9869869')
 bitcoin.createNewBlock(123,'sadasdasda23edasd23das','asd23dasdc234rasd23dqd')
 
-
+bitcoin.createNewTransaction('ram','revanth',5000)
 
 console.log(bitcoin)
