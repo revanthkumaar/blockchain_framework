@@ -16,6 +16,8 @@ Blockchain.prototype.createNewBlock = function(nonce,hash,previousBlockHash){
     this.pendingTransactions = [];
     this.chain.push(newBlock)
     return newBlock;
+
+
 }
 
 
@@ -32,4 +34,4 @@ Blockchain.prototype.createNewTransaction = function(sender,recipient,amount){
 
 
 
-
+module.exports = Blockchain; //permission
