@@ -19,3 +19,7 @@ const hash = bitcoin.hashBlock(previousBlockHash,nonce,currentBlockData)
 
 
 console.log(hash)
+
+console.log('-----------------')
+
+console.log(bitcoin)

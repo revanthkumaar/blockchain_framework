@@ -36,6 +36,7 @@ Blockchain.prototype.createNewTransaction = function(sender,recipient,amount){
 Blockchain.prototype.hashBlock = function(previousBlockHash,currentBlockData,nonce){
     
     const dataAsString = previousBlockHash + nonce.toString() + JSON.stringify(currentBlockData);
+    console.log(dataAsString);
     const hash = sha256(dataAsString)
     return hash;
 }
