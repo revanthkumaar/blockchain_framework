@@ -35,3 +35,9 @@ Blockchain.prototype.createNewTransaction = function(sender,recipient,amount){
 
 
 module.exports = Blockchain; //permission
+
+
+
+
+
+
