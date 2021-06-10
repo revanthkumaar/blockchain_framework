@@ -1,9 +1,8 @@
 const express = require('express')
-
 const bitcoinApp = express()
-
- bitcoinApp.get('/home',function(res,req){
-    res.send('home of bitcoin')
- })
-
- bitcoinApp.listen(3000)
+ 
+bitcoinApp.get('/', function (req, res) {
+  res.send('now you are at a node')
+})
+ 
+bitcoinApp.listen(3000)
