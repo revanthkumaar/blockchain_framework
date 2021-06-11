@@ -29,6 +29,8 @@ Blockchain.prototype.createNewTransaction = function(sender,recipient,amount){
         amount:amount
     }
     this.pendingTransactions.push(newTransaction);
+    console.log('this is from blockchain.js, this is the pending tr array: ')
+    console.log(this.pendingTransactions)
     return newTransaction;
 }
 

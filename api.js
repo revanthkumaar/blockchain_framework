@@ -1,6 +1,10 @@
 const express = require('express')
 const bitcoinApp = express()
 
+const Blockchain = require('./blockchain'); 
+//importing a functionality written inside a file called 'blockchain.js'
+const bitcoin = new Blockchain();
+
 const bodyParser = require('body-parser');
 
 bitcoinApp.use(bodyParser.json());
@@ -15,8 +19,13 @@ bitcoinApp.get('/home',function(req,res){
 })
  
 bitcoinApp.post('/transaction',function(req,res){
+  console.log('this is from api.js, i received the info : ')
+  console.log(req.body)
   const newTransaction = req.body;
-  console.log(newTransaction)
+  var sender = req.body.sender;
+  var recipient = req.body.recipient;
+  var amount = req.body.amount;
+  bitcoin.createNewTransaction(sender,recipient,amount);
   res.json({note: `transaction is received and be processed soon`})
 })
 
