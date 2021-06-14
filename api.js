@@ -29,4 +29,17 @@ bitcoinApp.post('/transaction',function(req,res){
   res.json({note: `transaction is received and be processed soon`})
 })
 
-bitcoinApp.listen(3000)
+
+bitcoinApp.post('/register-node',function(req,res){
+  const newNodeUrl = req.body.newNodeUrl;
+  const nodeAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1;
+  const notCurrentNode = bitcoin.currentNodeUrl !== newNodeUrl;
+  if(nodeAlreadyPresent && notCurrentNode){
+    bitcoin.networkNodes.push(newNodeUrl)
+  }
+  console.log('the blockchain constructor is:')
+  console.log(bitcoin)
+})
+
+
+bitcoinApp.listen(3001)
