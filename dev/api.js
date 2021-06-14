@@ -1,7 +1,7 @@
 const express = require('express')
 const bitcoinApp = express()
 const port = process.argv[2]
-const Blockchain = require('../blockchain'); 
+const Blockchain = require('./blockchain'); 
 //importing a functionality written inside a file called 'blockchain.js'
 const bitcoin = new Blockchain();
 
@@ -11,12 +11,9 @@ bitcoinApp.use(bodyParser.json());
 bitcoinApp.use(bodyParser.urlencoded({ extended: false }));
  
 bitcoinApp.get('/', function (req, res) {
-  res.send('now you are at a node')
+  res.send(bitcoin)
 })
 
-bitcoinApp.get('/home',function(req,res){
-    res.send('this is the home page of my node')
-})
  
 bitcoinApp.post('/transaction',function(req,res){
   console.log('this is from api.js, i received the info : ')
