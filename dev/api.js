@@ -1,7 +1,7 @@
 const express = require('express')
 const bitcoinApp = express()
-
-const Blockchain = require('./blockchain'); 
+const port = process.argv[2]
+const Blockchain = require('../blockchain'); 
 //importing a functionality written inside a file called 'blockchain.js'
 const bitcoin = new Blockchain();
 
@@ -29,7 +29,7 @@ bitcoinApp.post('/transaction',function(req,res){
   res.json({note: `transaction is received and be processed soon`})
 })
 
-
+//one to one node registery call
 bitcoinApp.post('/register-node',function(req,res){
   const newNodeUrl = req.body.newNodeUrl;
   const nodeAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1;
@@ -42,4 +42,6 @@ bitcoinApp.post('/register-node',function(req,res){
 })
 
 
-bitcoinApp.listen(3001)
+bitcoinApp.listen(port,function(){
+  console.log(`the node is active on port number : ${port}`)
+})
