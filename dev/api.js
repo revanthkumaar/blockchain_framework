@@ -5,6 +5,8 @@ const Blockchain = require('./blockchain');
 //importing a functionality written inside a file called 'blockchain.js'
 const bitcoin = new Blockchain();
 
+const rp = require('request-promise');
+
 const bodyParser = require('body-parser');
 
 bitcoinApp.use(bodyParser.json());
@@ -25,6 +27,41 @@ bitcoinApp.post('/transaction',function(req,res){
   bitcoin.createNewTransaction(sender,recipient,amount);
   res.json({note: `transaction is received and be processed soon`})
 })
+
+//network sync call
+// register a node and broadcast it the network
+bitcoinApp.post('/register-and-broadcast-node', function(req, res) {
+	const newNodeUrl = req.body.newNodeUrl;
+	if (bitcoin.networkNodes.indexOf(newNodeUrl) == -1) bitcoin.networkNodes.push(newNodeUrl);
+
+	const regNodesPromises = [];
+	bitcoin.networkNodes.forEach(networkNodeUrl => {
+		const requestOptions = {
+			uri: networkNodeUrl + '/register-node',
+			method: 'POST',
+			body: { newNodeUrl: newNodeUrl },
+			json: true
+		};
+
+		regNodesPromises.push(rp(requestOptions));
+	});
+
+	Promise.all(regNodesPromises)
+	.then(data => {
+		const bulkRegisterOptions = {
+			uri: newNodeUrl + '/register-nodes-bulk',
+			method: 'POST',
+			body: { allNetworkNodes: [ ...bitcoin.networkNodes, bitcoin.currentNodeUrl ] },
+			json: true
+		};
+
+		return rp(bulkRegisterOptions);
+	})
+	.then(data => {
+		res.json({ note: 'New node registered with network successfully.' });
+	});
+});
+
 
 //one to one node registry call
 bitcoinApp.post('/register-node',function(req,res){
