@@ -26,7 +26,7 @@ bitcoinApp.post('/transaction',function(req,res){
   res.json({note: `transaction is received and be processed soon`})
 })
 
-//one to one node registery call
+//one to one node registry call
 bitcoinApp.post('/register-node',function(req,res){
   const newNodeUrl = req.body.newNodeUrl;
   const nodeAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1;
@@ -36,8 +36,22 @@ bitcoinApp.post('/register-node',function(req,res){
   }
   console.log('the blockchain constructor is:')
   console.log(bitcoin)
+  res.json({ note: 'New node registered successfully.' });
 })
 
+//bulk node address registry
+bitcoinApp.post('/register-nodes-bulk',function(req,res){
+    const allNetworkNodes = req.body.allNetworkNodes;
+    allNetworkNodes.forEach(networkNodeUrl => {
+      const nodeNotAlreadyPresent = bitcoin.networkNodes.indexOf(networkNodeUrl) == -1;
+		const notCurrentNode = bitcoin.currentNodeUrl !== networkNodeUrl;
+		if (nodeNotAlreadyPresent && notCurrentNode) 
+    {
+      bitcoin.networkNodes.push(networkNodeUrl);
+    }
+    });
+    res.json({ note: 'Bulk registration successful.' });
+})
 
 bitcoinApp.listen(port,function(){
   console.log(`the node is active on port number : ${port}`)
