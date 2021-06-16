@@ -35,6 +35,8 @@ bitcoinApp.post('/register-and-broadcast-node', function(req, res) {
 	if (bitcoin.networkNodes.indexOf(newNodeUrl) == -1) bitcoin.networkNodes.push(newNodeUrl);
 
 	const regNodesPromises = [];
+
+  //NODE ADDRESS BROADCAST
 	bitcoin.networkNodes.forEach(networkNodeUrl => {
 		const requestOptions = {
 			uri: networkNodeUrl + '/register-node',
@@ -49,6 +51,7 @@ bitcoinApp.post('/register-and-broadcast-node', function(req, res) {
 	Promise.all(regNodesPromises)
 	.then(data => {
 		const bulkRegisterOptions = {
+      //BULK REGISTER 
 			uri: newNodeUrl + '/register-nodes-bulk',
 			method: 'POST',
 			body: { allNetworkNodes: [ ...bitcoin.networkNodes, bitcoin.currentNodeUrl ] },
