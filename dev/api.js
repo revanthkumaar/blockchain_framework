@@ -16,6 +16,7 @@ bitcoinApp.get('/', function (req, res) {
   res.send(bitcoin)
 })
 
+//for single node communication
  
 bitcoinApp.post('/transaction',function(req,res){
   console.log('this is from api.js, i received the info : ')
@@ -26,6 +27,19 @@ bitcoinApp.post('/transaction',function(req,res){
   var amount = req.body.amount;
   bitcoin.createNewTransaction(sender,recipient,amount);
   res.json({note: `transaction is received and be processed soon`})
+})
+
+//transaction broadcast functionality
+bitcoinApp.post('/transaction/broadcast',function(req,res){
+
+  //update pending transactions at current node
+
+
+
+
+  //broadcast the same transaction to all other nodes
+  
+  
 })
 
 //network sync call
