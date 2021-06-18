@@ -52,15 +52,53 @@ bitcoinApp.post('/transaction/broadcast',function(req,res){
 //mining API
 
 bitcoinApp.get('/mine',function(req,res){
+  //TO CREATE AND INSERT THE BLOCK AT CURRENT NODE : 3004
   const lastBlock = bitcoin.getLastBlock();
   const previousBlockHash = lastBlock['hash'];
   const currentBlockData = bitcoin.pendingTransactions;
   const nonce = bitcoin.proofOfWork(currentBlockData,previousBlockHash);
   const hash = bitcoin.hashBlock(previousBlockHash,currentBlockData,nonce);
-  bitcoin.createNewBlock(nonce,hash,previousBlockHash);
+  const newBlock = bitcoin.createNewBlock(nonce,hash,previousBlockHash);
+  //BROADCAST THE BLOCK 
+  
+  const requestPromises = [];
+  bitcoin.networkNodes.forEach(networkNodeUrl => {
+    const requestOptions = {
+      uri: networkNodeUrl+'/receive-new-block',
+      method: 'POST',
+      body: newBlock,
+      json:true
+    };
+    requestPromises.push(rp(requestOptions));
+    Promise.all(requestPromises)
+    .then(data => {
+     //generate the reward
+    })
 
+  })
 
 });
+
+bitcoinApp.post('/receive-new-block',function(req,res){
+  //receive the block info sent from the miner 
+  const newBlock = req.body.newBlock;
+  const lastBlock = bitcoin.getLastBlock();
+  const correctHash = lastBlock['hash'] === newBlock.previousBlockHash;
+  const correctIndex = lastBlock['index'] + 1 === newBlock['index'];
+//verifies if the block parameters match or not
+  if(correctHash && correctIndex){
+    bitcoin.chain.push(newBlock);
+    bitcoin.pendingTransactions= [];
+    res.json({
+      note: 'new block received and added'
+    })
+  }
+  else{
+    res.json({
+      note:'new block is not added'
+    })
+  }
+})
 
 //network sync call
 // register a node and broadcast it the network
