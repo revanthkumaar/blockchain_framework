@@ -19,8 +19,6 @@ bitcoinApp.get('/', function (req, res) {
 //for single node communication
  
 bitcoinApp.post('/transaction',function(req,res){
-  console.log('this is from api.js, i received the info : ')
-  console.log(req.body)
   const newTransaction = req.body;
   var sender = req.body.sender;
   var recipient = req.body.recipient;
@@ -31,16 +29,38 @@ bitcoinApp.post('/transaction',function(req,res){
 
 //transaction broadcast functionality
 bitcoinApp.post('/transaction/broadcast',function(req,res){
-
   //update pending transactions at current node
-
-
-
-
+	const newTransaction = bitcoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient);
   //broadcast the same transaction to all other nodes
-  
-  
+  const requestPromises = [];
+  bitcoin.networkNodes.forEach(networkNodeUrl => {
+    const requestOptions = {
+      uri: networkNodeUrl+'/transaction',
+      method: 'POST',
+      body: newTransaction,
+      json:true
+    };
+    requestPromises.push(rp(requestOptions));
+    Promise.all(requestPromises)
+    .then(data => {
+      res.json({note:'transaction broadcasted to other nodes, it will be confirmed in a while'})
+    })
+
+  })
 })
+
+//mining API
+
+bitcoinApp.get('/mine',function(req,res){
+  const lastBlock = bitcoin.getLastBlock();
+  const previousBlockHash = lastBlock['hash'];
+  const currentBlockData = bitcoin.pendingTransactions;
+  const nonce = bitcoin.proofOfWork(currentBlockData,previousBlockHash);
+  const hash = bitcoin.hashBlock(previousBlockHash,currentBlockData,nonce);
+  bitcoin.createNewBlock(nonce,hash,previousBlockHash);
+
+
+});
 
 //network sync call
 // register a node and broadcast it the network
