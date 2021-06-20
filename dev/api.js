@@ -73,6 +73,21 @@ bitcoinApp.get('/mine',function(req,res){
     Promise.all(requestPromises)
     .then(data => {
      //generate the reward
+    const requestOptions =  {    uri:bitcoin.currentNodeUrl+'/transaction/broadcast',
+      method:'POST',
+      body:{ 
+        sender:'00',
+        recipient:bitccoin.currentNodeUrl,
+        amount:6.5
+     },
+     json:true};
+
+     return rp(requestOptions);
+
+      
+    })
+    .then(data => {
+      res.json({note: "New block is mined and broadcasted succcessfully"})
     })
 
   })
