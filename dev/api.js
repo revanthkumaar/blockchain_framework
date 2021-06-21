@@ -231,11 +231,6 @@ bitcoinApp.get('/consensus',function(req,res){
 
   });
 
-
-
-
-
-
   //REPLACE THE SHORTER CHAINS WITH LONGEST ONE
 });
 
