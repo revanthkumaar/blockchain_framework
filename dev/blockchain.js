@@ -64,6 +64,20 @@ Blockchain.prototype.proofOfWork = function(currentBlockData,previousBlockHash){
 
 
 
+Blockchain.prototype.chainIsValid = function(blockchain){
+
+    //verify whether the longest chain is valid or not
+
+    let validChain = true;
+
+
+    //conditions to verify and return false if the chain fails any checks
+
+
+   return validChain;
+
+}
+
 
 module.exports = Blockchain; //permission
 

@@ -208,9 +208,25 @@ bitcoinApp.get('/consensus',function(req,res){
         newPendingTransactions = blockchain.pendingTransactions;
       }
     })
-
     //VERIFY THE LONGEST CHAIN'S VALIDITY
-    
+
+    if(!newLongestChain || (newLongestChain && !bitcoin.chainIsValid(newLongestChain))){
+        //you no need to replace the chain
+        res.json({
+          note: 'Current chain has not been replaced.',
+          chain: bitcoin.chain
+        });
+    }
+    else{
+
+      //you need to replace the chain
+      bitcoin.chain = newLongestChain;
+      bitcoin.pendingTransactions = newPendingTransactions;
+      res.json({
+				note: 'This chain has been replaced.',
+				chain: bitcoin.chain
+			});
+
 
   });
 
