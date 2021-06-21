@@ -65,12 +65,8 @@ Blockchain.prototype.proofOfWork = function(currentBlockData,previousBlockHash){
 
 
 Blockchain.prototype.chainIsValid = function(blockchain){
-
     //verify whether the longest chain is valid or not
-
     let validChain = true;
-
-
     //conditions to verify and return false if the chain fails any checks
     for(var i=1; i<blockchain.length; i++){
         const currentBlock = blockchain[i];
@@ -87,7 +83,6 @@ Blockchain.prototype.chainIsValid = function(blockchain){
             validChain = false;
         }  
     }
-
     //verify the genesis 
     const genesisBlock = blockchain[0];
     const correctNonce = genesisBlock['nonce'] === 0;
@@ -98,9 +93,7 @@ Blockchain.prototype.chainIsValid = function(blockchain){
     if (!correctNonce || !correctPreviousBlockHash || !correctHash || !correctTransactions) {
         validChain = false;
     }
-   
    return validChain;
-
 }
 
 

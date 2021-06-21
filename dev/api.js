@@ -227,6 +227,7 @@ bitcoinApp.get('/consensus',function(req,res){
 				chain: bitcoin.chain
 			});
 
+    }
 
   });
 
