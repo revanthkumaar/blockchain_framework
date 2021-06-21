@@ -12,7 +12,7 @@ const bodyParser = require('body-parser');
 bitcoinApp.use(bodyParser.json());
 bitcoinApp.use(bodyParser.urlencoded({ extended: false }));
  
-bitcoinApp.get('/', function (req, res) {
+bitcoinApp.get('/blockchain', function (req, res) {
   res.send(bitcoin)
 })
 
@@ -179,6 +179,48 @@ bitcoinApp.post('/register-nodes-bulk',function(req,res){
     });
     res.json({ note: 'Bulk registration successful.' });
 })
+
+//CONSENSUS: 
+bitcoinApp.get('/consensus',function(req,res){
+  //GET ALL THE CHAINS IN THE NETWORK
+  const requestPromises = [];
+  bitcoin.networkNodes.forEach(networkNodeUrl => {
+    const requestOptions = {
+        uri: networkNodeUrl + '/blockchain', 
+        method:'GET',
+        json:true
+    };
+    requestPromises.push(rp(requestOptions));
+  });
+  Promise.all(requestPromises) //async calling in javascript
+  .then(blockchains => {
+    //once you get all the chains from every node in the network
+    const currentChainLength = bitcoin.chain.length;
+    let maxChainLength = currentChainLength; //3003
+    let newLongestChain = null;
+    let newPendingTransactions = null;
+
+    blockchains.forEach(blockchain => {
+      if(blockchain.chain.length > maxChainLength){
+        maxchainLength = blockchain.chain.length;
+          //FIND OUT THE LONGEST CHAIN NAME
+        newLongestChain = blockchain.chain;
+        newPendingTransactions = blockchain.pendingTransactions;
+      }
+    })
+
+    //VERIFY THE LONGEST CHAIN'S VALIDITY
+    
+
+  });
+
+
+
+
+
+
+  //REPLACE THE SHORTER CHAINS WITH LONGEST ONE
+});
 
 bitcoinApp.listen(port,function(){
   console.log(`the node is active on port number : ${port}`)
