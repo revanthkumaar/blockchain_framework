@@ -219,7 +219,7 @@ bitcoinApp.get('/consensus',function(req,res){
     }
     else{
 
-      //you need to replace the chain
+      //REPLACE THE SHORTER CHAINS WITH LONGEST ONE
       bitcoin.chain = newLongestChain;
       bitcoin.pendingTransactions = newPendingTransactions;
       res.json({
@@ -231,8 +231,20 @@ bitcoinApp.get('/consensus',function(req,res){
 
   });
 
-  //REPLACE THE SHORTER CHAINS WITH LONGEST ONE
+  
 });
+
+bitcoinApp.get('/transaction/:transactionId',function(req,res){
+  const transactionId = req.params.transactionId;
+  const transactionData = bitcoin.getTransaction(transactionId);
+  res.json({
+		transaction: trasactionData.transaction,
+		block: trasactionData.block
+	});
+
+})
+
+
 
 bitcoinApp.listen(port,function(){
   console.log(`the node is active on port number : ${port}`)

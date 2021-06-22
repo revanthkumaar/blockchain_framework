@@ -1,13 +1,12 @@
 <!DOCTYPE html>
+<html>
 
 <head>
-
-    <title>Block Explorer</title>
+	<title>Block Explorer</title>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-
 </head>
 
 <body ng-app="BlockExplorer">
@@ -121,8 +120,61 @@
 		</div>
 	</div>
 
+	<script>
+		window.app = angular.module('BlockExplorer', []);
 
-    <style type="text/css">
+		app.controller('MainController', function($scope, $http) {
+			$scope.block = null;
+			$scope.transaction = null;
+			$scope.addressData = null;
+			$scope.initialSearchMade = false;
+
+			$scope.fetchBlock = function(blockHash) {
+				$http.get(`/block/${blockHash}`)
+				.then(response => {
+					$scope.block = response.data.block;
+					$scope.transaction = null;
+					$scope.addressData = null;
+				});
+			};
+
+			$scope.fetchTransaction = function(transactionId) {
+				$http.get(`/transaction/${transactionId}`)
+				.then(response => {
+					$scope.transaction = response.data.transaction;
+					$scope.block = null;
+					$scope.addressData = null;
+				});				
+			};
+
+			$scope.fetchAddressData = function(address) {
+				$http.get(`/address/${address}`)
+				.then(response => {
+					$scope.addressData = response.data.addressData;
+					if (!$scope.addressData.addressTransactions.length) $scope
+						.addressData = null;
+					$scope.block = null;
+					$scope.transaction = null;
+				});				
+			};
+
+			$scope.search = function(searchValue) {
+				$scope.initialSearchMade = true;
+				if ($scope.searchType === 'block') {
+					$scope.fetchBlock(searchValue);
+				}
+				else if ($scope.searchType === 'transaction') {
+					$scope.fetchTransaction(searchValue);
+				}
+				else if ($scope.searchType === 'address') {
+					$scope.fetchAddressData(searchValue);
+				}
+			};
+
+		});
+	</script>
+
+	<style type="text/css">
 		html, body {
 			min-height: 100vh;
 			background-color: #e8e8e8;
